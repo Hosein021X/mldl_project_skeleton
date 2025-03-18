@@ -2,7 +2,8 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
 from models.custom_net import CustomNet
-from data.dataset import get_tiny_imagenet_datasets
+from data.dataset import get_tiny_imagenet_dataloaders
+from utils.visualization import visualize_classes
 
 # Initialize model, loss, and optimizer
 model = CustomNet().cuda()
@@ -10,9 +11,10 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001)
 
 # Load datasets
-train_dataset, val_dataset = get_tiny_imagenet_datasets()
-train_loader = DataLoader(train_dataset, batch_size=24, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=24, shuffle=False)
+train_loader, val_loader = get_tiny_imagenet_dataloaders(batch_size=32)
+
+# Visualize some classes from the training set
+visualize_classes(train_loader, num_classes=10)
 
 # Training loop
 def train(epoch, model, train_loader, criterion, optimizer):
